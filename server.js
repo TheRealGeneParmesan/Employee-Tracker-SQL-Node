@@ -14,3 +14,95 @@ const db = mysql.createConnection({
     console.log(`Connected to employees_db database.`)
 );
 
+// Creates an array of prompts for user to respond to in order to organize the database accordingly.
+
+const dbQuestions = [{
+    type: 'input',
+    name: 'serviceQuestion',
+    message: "What would you like to do?"
+},
+
+{
+    type: 'input',
+    name: 'department',
+    message: "What is the name of your department?"
+
+},
+
+{
+    type: 'input',
+    name: 'customerServiceQuestion',
+    message: "What would you like to do?"
+
+},
+
+{
+    type: 'input',
+    name: 'roleName',
+    message: "What is the name of your role"
+
+},
+
+{
+    type: 'input',
+    name: 'salary',
+    message: "What is the salary of the role?"
+
+},
+
+{
+    type: 'input',
+    name: 'departmentRole',
+    message: "Which department does the role belong to?"
+
+},
+
+{
+    type: 'input',
+    name: 'employeeQuestion',
+    message: "What would you like to do?"
+
+},
+
+{
+    type: 'input',
+    name: 'employeeFirstName',
+    message: "What is the employee's first name?"
+
+},
+
+{
+    type: 'input',
+    name: 'employeeLastName',
+    message: "What is the employee's last name?"
+
+},
+{
+    type: 'input',
+    name: 'employeeRole',
+    message: "What is the employee's role?"
+
+},
+{
+    type: 'input',
+    name: 'employeeManager',
+    message: "Who is the employee's maanger?"
+
+},
+{
+    type: 'input',
+    name: 'updateQuestion',
+    message: "What would you like to do?"
+
+},
+
+{
+    type: 'list',
+    name: 'department',
+    message: "Whaich employee's role do you want to update?",
+    choices: ['Malia Brown', 'Sara Lourd', 'Tom Allen', 'Sam Kash', 'John Doe'],
+
+},
+
+
+];
