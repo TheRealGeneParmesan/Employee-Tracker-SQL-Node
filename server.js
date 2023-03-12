@@ -24,7 +24,7 @@ const dbQuestions = [{
 
 {
     type: 'input',
-    name: 'department',
+    name: 'departmentName',
     message: "What is the name of your department?"
 
 },
@@ -99,10 +99,20 @@ const dbQuestions = [{
 {
     type: 'list',
     name: 'department',
-    message: "Whaich employee's role do you want to update?",
+    message: "Which employee's role do you want to update?",
     choices: ['Malia Brown', 'Sara Lourd', 'Tom Allen', 'Sam Kash', 'John Doe'],
 
 },
 
 
 ];
+
+// The prompt takes the questions that are stored in the readQuestions array and then once the questions are answered they are passed to the .then promise. The answers are stored in the answers object.   
+
+function init() {
+    inquirer.prompt(dbQuestions).then((answers) => {
+        const { serviceQuestion, departmentName, customerServiceQuestion, roleName, salary, departmentRole, employeeQuestion, employeeFirstName, employeeLastName, employeeRole, employeeManager, updateQuestion, department } = answers;
+    });
+};
+
+init();
