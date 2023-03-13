@@ -9,10 +9,15 @@ const db = mysql.createConnection({
     user: 'root',
     password: 'pNk9UeLmIY15!0IU',
     database: 'employees_db'
-},
+});
 
-    console.log(`Connected to employees_db database.`)
-);
+db.connect((err) => {
+    if (err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+    }
+    console.log(`Connected to employees_db database.`);
+});
 
 inquirer.prompt([
     {
@@ -57,15 +62,26 @@ inquirer.prompt([
             addDepartment();
         }
         if (choices === 'Quit') {
-            Connection.end();
+            db.end();
         }
     });
 
-const viewAllEmployees = () => {
-    let mysql = connection.query('SELECT * FROM EMPLOYEES', (err, results) => {
+
+const viewAllDepartments = () => {
+    const sql = `Select department.id AS id, department.department_name AS department from department`;
+
+    db.query(sql, (err, rows) => {
         if (err) throw err;
-    })
-    console.log(results)
+        console.table(rows);
+    });
+};
+
+const viewAllEmployees = () => {
+    const sql = `SELECT * FROM EMPLOYEES`;
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
+    });
 };
 
 
