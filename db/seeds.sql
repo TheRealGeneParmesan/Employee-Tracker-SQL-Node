@@ -7,11 +7,11 @@ VALUES (1, "Malia", "Brown", 1),
 
 
 INSERT INTO roles (title, salary, department_id)
-VALUES (BananaSales, 60,000 ),
-       (OrangeMarketer, 50,000),
-       (BlueberryEater, 75,000),
-       (ChocolateInvestigator, 130,000)
-       (CerealKiller, 82,000);
+VALUES ("BananaSales", 60000, 1),
+       ("OrangeMarketer", 50000, 2),
+       ("BlueberryEater", 75000, 3),
+       ("ChocolateInvestigator", 130000, 4),
+       ("CerealKiller", 82000, 5);
 
 INSERT INTO departments (dep_name)
 VALUES ("sales"),
