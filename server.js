@@ -17,9 +17,10 @@ const db = mysql.createConnection({
 // Creates an array of prompts for user to respond to in order to organize the database accordingly.
 
 const dbQuestions = [{
-    type: 'input',
+    type: 'list',
     name: 'serviceQuestion',
-    message: "What would you like to do?"
+    message: "What would you like to do?",
+    choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View all Roles', 'Add Role', 'View all Departments', 'Add Department', 'Quit']
 },
 
 {
@@ -30,10 +31,10 @@ const dbQuestions = [{
 },
 
 {
-    type: 'input',
-    name: 'customerServiceQuestion',
-    message: "What would you like to do?"
-
+    type: 'list',
+    name: 'serviceQuestion',
+    message: "What would you like to do?",
+    choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View all Roles', 'Add Role', 'View all Departments', 'Add Department', 'Quit']
 },
 
 {
@@ -58,9 +59,10 @@ const dbQuestions = [{
 },
 
 {
-    type: 'input',
-    name: 'employeeQuestion',
-    message: "What would you like to do?"
+    type: 'list',
+    name: 'serviceQuestion',
+    message: "What would you like to do?",
+    choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View all Roles', 'Add Role', 'View all Departments', 'Add Department', 'Quit']
 
 },
 
@@ -90,9 +92,10 @@ const dbQuestions = [{
 
 },
 {
-    type: 'input',
-    name: 'updateQuestion',
-    message: "What would you like to do?"
+    type: 'list',
+    name: 'serviceQuestion',
+    message: "What would you like to do?",
+    choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View all Roles', 'Add Role', 'View all Departments', 'Add Department', 'Quit']
 
 },
 
@@ -111,7 +114,7 @@ const dbQuestions = [{
 
 function init() {
     inquirer.prompt(dbQuestions).then((answers) => {
-        const { serviceQuestion, departmentName, customerServiceQuestion, roleName, salary, departmentRole, employeeQuestion, employeeFirstName, employeeLastName, employeeRole, employeeManager, updateQuestion, department } = answers;
+        const { serviceQuestion, departmentName, roleName, salary, departmentRole, employeeFirstName, employeeLastName, employeeRole, employeeManager, department } = answers;
     });
 };
 
