@@ -12,12 +12,15 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME
 });
 
+// Logs any error with connecting to database
 db.connect((err) => {
     if (err) {
         console.error(err);
     }
     console.log(`Connected to employees_db database.`);
 });
+
+// Function to start the inquirer prompt, which gives us a list of menu options for our employee database
 
 const letsGetItStarted = () => {
     inquirer.prompt([
@@ -37,6 +40,7 @@ const letsGetItStarted = () => {
             ]
         }
     ])
+        // Calls the respective function based on the selection chosen in the menu
         .then((answers) => {
             const { serviceQuestion } = answers;
 
@@ -68,15 +72,17 @@ const letsGetItStarted = () => {
         });
 };
 
-
+// Function to view all of the employees in the database and throws an error if there's any issues
 const viewAllEmployees = () => {
     const sql = `SELECT * FROM EMPLOYEES`;
-    letsGetItStarted();
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
+        letsGetItStarted();
     });
 };
+
+// Adds new employee to table 
 
 const addEmployee = () => {
     inquirer.prompt([
@@ -92,30 +98,52 @@ const addEmployee = () => {
             message: "What is the employee's last name?",
             validate: (input) => input.length <= 30,
         },
+
         {
             type: 'input',
             name: 'role_id',
             message: "What is the employee's title?",
-            // May need an if/else statement here to ensure that they input the right description
-            validate: (input) => input.length <= 15
+
+            // Validate statement to ensure that the role ID response is an integer between 1-5
+            validate: (input) => {
+                const roleID = Number(input);
+                if (Number.isInteger(roleID) && roleID >= 1 && roleID <= 5)
+                    return true;
+                else {
+                    return "Enter a valid integer between 1-5"
+                }
+            }
         },
+
         {
             type: 'input',
             name: 'manager_id',
             message: "Who is the employee's manager?",
 
-            // May need an if/else statement here to ensure that they input the right description
-            validate: (input) => input.length <= 15
+            // Validate statement to ensure that the manager ID response is an integer between 1-5
+            validate: (input) => {
+                const managerID = Number(input);
+                if (Number.isInteger(managerID) && managerID >= 1 && managerID <= 5)
+                    return true;
+                else {
+                    return "Enter a valid integer between 1-5"
+                }
+            }
         },
 
-    ]).then((answers) => {
-        const { firstName, lastName, roleTitle, managerName } = answers;
+        // Once we receive the answers for first name, last name, role id and manager ID, we insert a new row in the employees table with the answers from the prompt and we log it to make sure that the employee was added correctly.
 
-        const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)`
-        letsGetItStarted();
+    ]).then((answers) => {
+        const { first_name, last_name, role_id, manager_id } = answers;
+
+        const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+        db.query(sql, [first_name, last_name, role_id, manager_id], (err, result) => {
+            if (err) throw err;
+            console.log(`Added ${first_name} ${last_name} to employees.`);
+            letsGetItStarted();
+        });
     });
 };
-
 
 
 const viewAllDepartments = () => {
@@ -132,115 +160,3 @@ letsGetItStarted();
 
 
 
-
-// const dbQuestions = [{
-//     type: 'list',
-//     name: 'serviceQuestion',
-//     message: "What would you like to do?",
-//     choices: [
-//     'View All Employees',
-//     'Add Employee',
-//     'Update Employee Role',
-//     'View all Roles',
-//     'Add Role',
-//     'View all Departments',
-//     'Add Department',
-//     'Quit']
-// },
-
-// {
-//     type: 'input',
-//     name: 'departmentName',
-//     message: "What is the name of your department?"
-
-// },
-
-// {
-//     type: 'list',
-//     name: 'serviceQuestion',
-//     message: "What would you like to do?",
-//     choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View all Roles', 'Add Role', 'View all Departments', 'Add Department', 'Quit']
-// },
-
-// {
-//     type: 'input',
-//     name: 'roleName',
-//     message: "What is the name of your role"
-
-// },
-
-// {
-//     type: 'input',
-//     name: 'salary',
-//     message: "What is the salary of the role?"
-
-// },
-
-// {
-//     type: 'input',
-//     name: 'departmentRole',
-//     message: "Which department does the role belong to?"
-
-// },
-
-// {
-//     type: 'list',
-//     name: 'serviceQuestion',
-//     message: "What would you like to do?",
-//     choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View all Roles', 'Add Role', 'View all Departments', 'Add Department', 'Quit']
-
-// },
-
-// {
-//     type: 'input',
-//     name: 'employeeFirstName',
-//     message: "What is the employee's first name?"
-
-// },
-
-// {
-//     type: 'input',
-//     name: 'employeeLastName',
-//     message: "What is the employee's last name?"
-
-// },
-// {
-//     type: 'input',
-//     name: 'employeeRole',
-//     message: "What is the employee's role?"
-
-// },
-// {
-//     type: 'input',
-//     name: 'employeeManager',
-//     message: "Who is the employee's maanger?"
-
-// },
-// {
-//     type: 'list',
-//     name: 'serviceQuestion',
-//     message: "What would you like to do?",
-//     choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View all Roles', 'Add Role', 'View all Departments', 'Add Department', 'Quit']
-
-// },
-
-// {
-//     type: 'list',
-//     name: 'department',
-//     message: "Which employee's role do you want to update?",
-//     choices: ['Malia Brown', 'Sara Lourd', 'Tom Allen', 'Sam Kash', 'John Doe'],
-
-// },
-
-
-// ];
-
-// // The prompt takes the questions that are stored in the readQuestions array and then once the questions are answered they are passed to the .then promise. The answers are stored in the answers object.
-
-// function init() {
-//     inquirer.prompt(dbQuestions).then((answers) => {
-//         const { serviceQuestion, departmentName, roleName, salary, departmentRole, employeeFirstName, employeeLastName, employeeRole, employeeManager, department } = answers;
-//     });
-// };
-
-// init();
