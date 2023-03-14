@@ -139,21 +139,47 @@ const addEmployee = () => {
         const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
         db.query(sql, [first_name, last_name, role_id, manager_id], (err, result) => {
             if (err) throw err;
-            console.log(`Added ${first_name} ${last_name} to employees.`);
-            letsGetItStarted();
+            console.log(`Added ${first_name} ${last_name} to the database.`);
+            viewAllEmployees();
         });
     });
 };
 
 
 const viewAllDepartments = () => {
-    const sql = `Select department.id AS id, department.department_name AS department FROM department`;
+    const sql = `SELECT departments.department_name AS department 
+    FROM departments 
+    ORDER BY departments.department_name ASC`;
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
         letsGetItStarted();
     });
 };
+
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'department_name',
+            message: "What is the name of the department?",
+            validate: (input) => input.length <= 20,
+        },
+
+        // Once we receive the answers for department name we insert a new row in the employees table with the answers from the prompt and log it
+
+    ]).then((answers) => {
+        const { department_name } = answers;
+
+        const sql = `INSERT INTO departments (department_name) VALUES (?)`;
+        db.query(sql, [department_name], (err, result) => {
+            if (err) throw err;
+            console.log(`Added ${department_name} to the database.`);
+            viewAllDepartments();
+        });
+    });
+};
+
 
 letsGetItStarted();
 
