@@ -14,61 +14,64 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error('error connecting');
+        console.error(err);
     }
     console.log(`Connected to employees_db database.`);
 });
 
-inquirer.prompt([
-    {
-        type: 'list',
-        name: 'serviceQuestion',
-        message: 'What would you like to do?',
-        choices: [
-            'View all Employees',
-            'Add Employee',
-            'Update Employee Role',
-            'View all Roles',
-            'Add Role',
-            'View all Departments',
-            'Add Department',
-            'Quit'
-        ]
-    }
-])
-    .then((answers) => {
-        const { serviceQuestion } = answers;
+const letsGetItStarted = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'serviceQuestion',
+            message: 'What would you like to do?',
+            choices: [
+                'View all Employees',
+                'Add Employee',
+                'Update Employee Role',
+                'View all Roles',
+                'Add Role',
+                'View all Departments',
+                'Add Department',
+                'Quit'
+            ]
+        }
+    ])
+        .then((answers) => {
+            const { serviceQuestion } = answers;
 
-        if (serviceQuestion === 'View all Employees') {
-            viewAllEmployees();
-        }
+            if (serviceQuestion === 'View all Employees') {
+                viewAllEmployees();
+            }
 
-        if (serviceQuestion === 'Add Employee') {
-            addEmployee();
-        }
-        if (serviceQuestion === 'Update Employee Role') {
-            updateEmployeeRole();
-        }
-        if (serviceQuestion === 'View all Roles') {
-            viewAllRoles();
-        }
-        if (serviceQuestion === 'Add Role') {
-            addRole();
-        }
-        if (serviceQuestion === 'View all Departments') {
-            viewAllDepartments();
-        }
-        if (serviceQuestion === 'Add Department') {
-            addDepartment();
-        }
-        if (serviceQuestion === 'Quit') {
-            db.end();
-        }
-    });
+            if (serviceQuestion === 'Add Employee') {
+                addEmployee();
+            }
+            if (serviceQuestion === 'Update Employee Role') {
+                updateEmployeeRole();
+            }
+            if (serviceQuestion === 'View all Roles') {
+                viewAllRoles();
+            }
+            if (serviceQuestion === 'Add Role') {
+                addRole();
+            }
+            if (serviceQuestion === 'View all Departments') {
+                viewAllDepartments();
+            }
+            if (serviceQuestion === 'Add Department') {
+                addDepartment();
+            }
+            if (serviceQuestion === 'Quit') {
+                db.end();
+            }
+        });
+};
 
 
 const viewAllEmployees = () => {
     const sql = `SELECT * FROM EMPLOYEES`;
+    letsGetItStarted();
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
@@ -79,50 +82,52 @@ const addEmployee = () => {
     inquirer.prompt([
         {
             type: 'input',
-            name: 'firstName',
+            name: 'first_name',
             message: "What is the employee's first name?",
             validate: (input) => input.length <= 15,
         },
         {
             type: 'input',
-            name: 'lastName',
+            name: 'last_name',
             message: "What is the employee's last name?",
             validate: (input) => input.length <= 30,
         },
         {
             type: 'input',
-            name: 'roleTitle',
+            name: 'role_id',
             message: "What is the employee's title?",
             // May need an if/else statement here to ensure that they input the right description
             validate: (input) => input.length <= 15
         },
         {
             type: 'input',
-            name: 'managerName',
+            name: 'manager_id',
             message: "Who is the employee's manager?",
 
             // May need an if/else statement here to ensure that they input the right description
             validate: (input) => input.length <= 15
         },
+
     ]).then((answers) => {
         const { firstName, lastName, roleTitle, managerName } = answers;
 
         const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)`
-    });
-}; 1
-
-
-
-const viewAllDepartments = () => {
-    const sql = `Select department.id AS id, department.department_name AS department from department`;
-
-    db.query(sql, (err, rows) => {
-        if (err) throw err;
-        console.table(rows);
+        letsGetItStarted();
     });
 };
 
 
+
+const viewAllDepartments = () => {
+    const sql = `Select department.id AS id, department.department_name AS department FROM department`;
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
+        letsGetItStarted();
+    });
+};
+
+letsGetItStarted();
 
 
 

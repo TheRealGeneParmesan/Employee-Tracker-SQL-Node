@@ -14,11 +14,11 @@ VALUES ("BananaSales", 60000, 1),
 
 
 INSERT INTO employees (role_id, first_name, last_name, manager_id)
-VALUES (1, "Malia", "Brown", 1),
-       (2, "Sara", "Lourd", 2),
-       (3, "Tom", "Allen", 3),
-       (4, "Sam", "Kash", 4),
-       (5, "John", "Doe", 5);
+VALUES (1, "Kendrick", "Lamar", 1),
+       (2, "Biggie", "Smalls", 2),
+       (3, "Steve", "Buschemi", 3),
+       (4, "John", "Doe", 4),
+       (5, "John", "Cena", 5);
 
 
 
