@@ -13,8 +13,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error('error connecting: ' + err.stack);
-        return;
+        console.error('error connecting');
     }
     console.log(`Connected to employees_db database.`);
 });
@@ -37,34 +36,80 @@ inquirer.prompt([
     }
 ])
     .then((answers) => {
-        const { choices } = answers;
+        const { serviceQuestion } = answers;
 
-        if (choices === 'View all Employes') {
+        if (serviceQuestion === 'View all Employees') {
             viewAllEmployees();
         }
 
-        if (choices === 'Add Employee') {
+        if (serviceQuestion === 'Add Employee') {
             addEmployee();
         }
-        if (choices === 'Update Employee Role') {
+        if (serviceQuestion === 'Update Employee Role') {
             updateEmployeeRole();
         }
-        if (choices === 'View all Roles') {
+        if (serviceQuestion === 'View all Roles') {
             viewAllRoles();
         }
-        if (choices === 'Add Role') {
+        if (serviceQuestion === 'Add Role') {
             addRole();
         }
-        if (choices === 'View all Departments') {
+        if (serviceQuestion === 'View all Departments') {
             viewAllDepartments();
         }
-        if (choices === 'Add Department') {
+        if (serviceQuestion === 'Add Department') {
             addDepartment();
         }
-        if (choices === 'Quit') {
+        if (serviceQuestion === 'Quit') {
             db.end();
         }
     });
+
+
+const viewAllEmployees = () => {
+    const sql = `SELECT * FROM EMPLOYEES`;
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
+    });
+};
+
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'firstName',
+            message: "What is the employee's first name?",
+            validate: (input) => input.length <= 15,
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: "What is the employee's last name?",
+            validate: (input) => input.length <= 30,
+        },
+        {
+            type: 'input',
+            name: 'roleTitle',
+            message: "What is the employee's title?",
+            // May need an if/else statement here to ensure that they input the right description
+            validate: (input) => input.length <= 15
+        },
+        {
+            type: 'input',
+            name: 'managerName',
+            message: "Who is the employee's manager?",
+
+            // May need an if/else statement here to ensure that they input the right description
+            validate: (input) => input.length <= 15
+        },
+    ]).then((answers) => {
+        const { firstName, lastName, roleTitle, managerName } = answers;
+
+        const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)`
+    });
+}; 1
+
 
 
 const viewAllDepartments = () => {
@@ -75,22 +120,6 @@ const viewAllDepartments = () => {
         console.table(rows);
     });
 };
-
-const viewAllEmployees = () => {
-    const sql = `SELECT * FROM EMPLOYEES`;
-    db.query(sql, (err, rows) => {
-        if (err) throw err;
-        console.table(rows);
-    });
-};
-
-
-
-
-
-
-
-
 
 
 
