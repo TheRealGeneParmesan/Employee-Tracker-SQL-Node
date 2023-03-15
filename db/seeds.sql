@@ -8,9 +8,9 @@ VALUES ('Sales'),
 INSERT INTO roles (title, salary, department_id)
 VALUES ('BananaSales', 60000, 1),
        ('OrangeMarketer', 50000, 2),
-       ('BlueberryEater', 75000, 3),
-       ('ChocolateInvestigator', 130000, 4),
-       ('CerealKiller', 82000,5);
+       ('BlueberryEater', 75000, 4),
+       ('ChocolateInvestigator', 130000, 3),
+       ('CerealKiller', 82000, 5);
 
 
 INSERT INTO employees (role_id, first_name, last_name, manager_id)

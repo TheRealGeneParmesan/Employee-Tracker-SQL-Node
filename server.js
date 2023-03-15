@@ -72,7 +72,7 @@ const letsGetItStarted = () => {
         });
 };
 
-// Function to view all of the employees in the database and throws an error if there's any issues
+// Displays all the employees in the database 
 const viewAllEmployees = () => {
     const sql = `SELECT * FROM EMPLOYEES`;
     db.query(sql, (err, rows) => {
@@ -157,6 +157,8 @@ const viewAllDepartments = () => {
     });
 };
 
+// Adds a new department based on response and then runs the viewAllDepartments function to show the updated departments within the database.
+
 const addDepartment = () => {
     inquirer.prompt([
         {
@@ -180,6 +182,50 @@ const addDepartment = () => {
     });
 };
 
+const viewAllRoles = () => {
+    const sql = `SELECT roles.title AS role
+    FROM roles
+    ORDER BY roles.title ASC`;
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
+        letsGetItStarted();
+    });
+};
+
+// Adds a new role based on response and then runs the viewAllRoles function to show the updated roles within the database.
+
+const addRole = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'role_name',
+            message: "What is the name of the role?",
+
+        },
+
+        {
+            type: 'input',
+            name: 'salary',
+            message: "What is the salary for this role?",
+            validate: (input) => {
+                return isNaN(input) ? 'Please enter a number' : true;
+            },
+        },
+
+        // Once we receive the answers for role name we insert a new row in the roles table with the answers from the prompt and log it
+
+    ]).then((answers) => {
+        const { role_name, salary } = answers;
+
+        const sql = `INSERT INTO roles (title, salary) VALUES (?, ?)`;
+        db.query(sql, [role_name, salary], (err, result) => {
+            if (err) throw err;
+            console.log(`Added ${role_name} to the database.`);
+            viewAllRoles();
+        });
+    });
+};
 
 letsGetItStarted();
 
