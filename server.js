@@ -68,6 +68,7 @@ const letsGetItStarted = () => {
             }
             if (serviceQuestion === 'Quit') {
                 db.end();
+                console.log("bye")
             }
         });
 };
@@ -145,42 +146,55 @@ const addEmployee = () => {
     });
 };
 
+// Updates the role ID of an employee
 
-const viewAllDepartments = () => {
-    const sql = `SELECT departments.department_name AS department 
-    FROM departments 
-    ORDER BY departments.department_name ASC`;
-    db.query(sql, (err, rows) => {
+const updateEmployeeRole = () => {
+
+    const sql = `SELECT id, first_name, last_name FROM employees`;
+    db.query(sql, (err, results) => {
         if (err) throw err;
-        console.table(rows);
-        letsGetItStarted();
+
+        // Maps each object to a new object with name and value properties
+        const employees = results.map((employee) => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id,
+        }));
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employeeId',
+                message: 'Which employee do you want to update?',
+                choices: employees,
+            },
+
+            {
+                type: 'input',
+                name: 'roleId',
+                message: 'What is the employees new role ID?',
+
+                validate: (input) => {
+                    const roleId = Number(input);
+                    if (Number.isInteger(roleId) && roleId >= 1 && roleId <= 5) {
+                        return true;
+                    }
+                    return 'Please enter a valid integer between 1 and 5';
+                },
+            },
+        ])
+            .then((answers) => {
+                const { employeeId, roleId } = answers;
+                const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
+                db.query(sql, [roleId, employeeId], (err, result) => {
+                    if (err) throw err;
+                    console.log(`Updated employee's role.`);
+                    viewAllRoles();
+                });
+            });
     });
 };
 
-// Adds a new department based on response and then runs the viewAllDepartments function to show the updated departments within the database.
-
-const addDepartment = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'department_name',
-            message: "What is the name of the department?",
-            validate: (input) => input.length <= 20,
-        },
-
-        // Once we receive the answers for department name we insert a new row in the employees table with the answers from the prompt and log it
-
-    ]).then((answers) => {
-        const { department_name } = answers;
-
-        const sql = `INSERT INTO departments (department_name) VALUES (?)`;
-        db.query(sql, [department_name], (err, result) => {
-            if (err) throw err;
-            console.log(`Added ${department_name} to the database.`);
-            viewAllDepartments();
-        });
-    });
-};
+// Displays all roles in ascending order 
 
 const viewAllRoles = () => {
     const sql = `SELECT roles.title AS role
@@ -223,6 +237,44 @@ const addRole = () => {
             if (err) throw err;
             console.log(`Added ${role_name} to the database.`);
             viewAllRoles();
+        });
+    });
+};
+
+// Displays all departments in ascending order
+
+const viewAllDepartments = () => {
+    const sql = `SELECT departments.department_name AS department 
+    FROM departments 
+    ORDER BY departments.department_name ASC`;
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
+        letsGetItStarted();
+    });
+};
+
+// Adds a new department based on response and then runs the viewAllDepartments function to show the updated departments within the database.
+
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'department_name',
+            message: "What is the name of the department?",
+            validate: (input) => input.length <= 20,
+        },
+
+        // Once we receive the answers for department name we insert a new row in the employees table with the answers from the prompt and log it
+
+    ]).then((answers) => {
+        const { department_name } = answers;
+
+        const sql = `INSERT INTO departments (department_name) VALUES (?)`;
+        db.query(sql, [department_name], (err, result) => {
+            if (err) throw err;
+            console.log(`Added ${department_name} to the database.`);
+            viewAllDepartments();
         });
     });
 };
