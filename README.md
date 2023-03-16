@@ -30,7 +30,7 @@ I did not utilize unit testing for this project.
 
 ## Questions
 
-If you have additional questions you can contact me at Geneparmigiano@gmail.com. Also if you want to check out a cool github page you can find me here: https://github.com/TheRealGeneParmesan.
+If you have additional questions you can contact me at Geneparmigiano@gmail.com. Also if you want to check out more projects that I have done you can find me here: https://github.com/TheRealGeneParmesan.
 
 ## License
 
