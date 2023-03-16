@@ -26,7 +26,7 @@ https://drive.google.com/file/d/1mp41bPssywLOEdp_ImStBYQgfJoaGQ28/view
 
 ## Tests
 
-I did not utilize unit testing in this project. 
+I did not utilize unit testing for this project. 
 
 ## Questions
 
