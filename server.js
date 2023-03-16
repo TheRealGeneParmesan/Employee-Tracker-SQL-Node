@@ -20,7 +20,8 @@ db.connect((err) => {
         console.error(err);
     }
     console.log(`Connected to employees_db database.`);
-    console.log(logo({ name: 'Employee Database', logoColor: 'red', textColor: 'white' }).render());
+    console.log(
+        logo({ name: 'Employee Database', font: 'ANSI Shadow', lineChars: 10, padding: 2, margin: 3, borderColor: 'grey', logoColor: 'magenta', textColor: 'green' }).render());
     letsGetItStarted();
 });
 
