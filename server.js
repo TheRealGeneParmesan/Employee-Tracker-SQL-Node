@@ -2,6 +2,8 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 require('dotenv').config();
+const cTable = require('console.table')
+const logo = require('asciiart-logo');
 
 // Connect to database
 const db = mysql.createConnection({
@@ -12,12 +14,14 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME
 });
 
-// Logs any error with connecting to database
+//  Connects to employees database
 db.connect((err) => {
     if (err) {
         console.error(err);
     }
     console.log(`Connected to employees_db database.`);
+    console.log(logo({ name: 'Employee Database', logoColor: 'red', textColor: 'white' }).render());
+    letsGetItStarted();
 });
 
 // Function to start the inquirer prompt, which gives us a list of menu options for our employee database
@@ -75,7 +79,8 @@ const letsGetItStarted = () => {
 
 // Displays all the employees in the database 
 const viewAllEmployees = () => {
-    const sql = `SELECT * FROM EMPLOYEES`;
+    const sql = `SELECT employees.id as EmployeeID, employees.first_name AS First_Name, employees.last_name as Last_Name, roles.title AS Title, CONCAT(manager.first_name, " ",manager.last_name) AS Manager FROM employees JOIN roles on employees.role_id = roles.id JOIN employees manager on employees.manager_id = manager.id`;
+
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
@@ -91,13 +96,13 @@ const addEmployee = () => {
             type: 'input',
             name: 'first_name',
             message: "What is the employee's first name?",
-            validate: (input) => input.length <= 15,
+            validate: (input) => input.length >= 1,
         },
         {
             type: 'input',
             name: 'last_name',
             message: "What is the employee's last name?",
-            validate: (input) => input.length <= 30,
+            validate: (input) => input.length >= 1,
         },
 
         {
@@ -279,7 +284,6 @@ const addDepartment = () => {
     });
 };
 
-letsGetItStarted();
 
 
 

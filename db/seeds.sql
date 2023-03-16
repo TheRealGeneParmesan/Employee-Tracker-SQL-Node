@@ -14,9 +14,9 @@ VALUES ('BananaSales', 60000, 1),
 
 
 INSERT INTO employees (role_id, first_name, last_name, manager_id)
-VALUES (1, 'Kendrick', 'Lamar', 5),
-       (2, 'Biggie', 'Smalls', 4),
-       (3, 'Steve', 'Buschemi', 3),
-       (4, 'John', 'Doe', 2),
-       (5, 'John', 'Cena', 1);
+VALUES (1, 'Kendrick', 'Lamar', NULL),
+       (2, 'Biggie', 'Smalls', 1),
+       (3, 'Steve', 'Buschemi',2),
+       (4, 'John', 'Doe', 3),
+       (5, 'John', 'Cena', 4);
 
