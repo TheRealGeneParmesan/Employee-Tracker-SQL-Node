@@ -93,68 +93,79 @@ const viewAllEmployees = () => {
 
 const addEmployee = () => {
 
+    const roleSql = `SELECT id, title FROM roles`;
+    const managerSql = `SELECT id, CONCAT(first_name," ", last_name) as name FROM employees WHERE manager_id IS NOT NULL`;
 
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'first_name',
-            message: "What is the employee's first name?",
-            validate: (input) => input.length >= 1,
-        },
-        {
-            type: 'input',
-            name: 'last_name',
-            message: "What is the employee's last name?",
-            validate: (input) => input.length >= 1,
-        },
+    db.query(roleSql, (err, roles) => {
+        if (err) throw err;
 
-        {
-            type: 'input',
-            name: 'role_id',
-            message: "What is the employee's title?",
-
-            // Validate statement to ensure that the role ID response is an integer between 1-100
-            validate: (input) => {
-                const roleID = Number(input);
-                if (Number.isInteger(roleID) && roleID >= 1 && roleID <= 100)
-                    return true;
-                else {
-                    return "Enter a valid integer between 1-100"
-                }
+        db.query(managerSql, (err, managers) => {
+            if (err) {
+                console.log(err);
+                throw err;
             }
-        },
 
-        {
-            type: 'input',
-            name: 'manager_id',
-            message: "Who is the employee's manager?",
+            // We use the map method here to create new arrays of objects to use for our role selection as well as our manager selection.
 
-            // Validate statement to ensure that the manager ID response is an integer between 1-100
-            validate: (input) => {
-                const managerID = Number(input);
-                if (Number.isInteger(managerID) && managerID >= 1 && managerID <= 100)
-                    return true;
-                else {
-                    return "Enter a valid integer between 1-100"
-                }
-            }
-        },
+            const roleChoices = roles.map((role) => ({
+                name: role.title,
+                value: role.id,
+            }));
 
-        // Once we receive the answers for first name, last name, role id and manager ID, we insert a new row in the employees table with the answers from the prompt.
+            const managerChoices = managers.map((manager) => ({
+                name: manager.name,
+                value: manager.id,
+            }));
 
-    ]).then((answers) => {
-        const { first_name, last_name, role_id, manager_id } = answers;
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'first_name',
+                    message: "What is the employee's first name?",
+                    validate: (input) => input.length >= 1,
+                },
+                {
+                    type: 'input',
+                    name: 'last_name',
+                    message: "What is the employee's last name?",
+                    validate: (input) => input.length >= 1,
+                },
 
-        const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
-        db.query(sql, [first_name, last_name, role_id, manager_id], (err, result) => {
-            if (err) throw err;
-            console.log(`Added ${first_name} ${last_name} to the database.`);
-            viewAllEmployees();
+                {
+                    type: 'list',
+                    name: 'role_id',
+                    message: "What is the employee's role?",
+                    choices: roleChoices
+
+                },
+
+                {
+                    type: 'list',
+                    name: 'manager_id',
+                    message: "Who is the employee's manager?",
+                    choices: managerChoices
+
+                },
+
+                // Once we receive the name of the employee's first name, last name, role and manger
+
+            ]).then((answers) => {
+                const { first_name, last_name, role_id, manager_id } = answers;
+
+                const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+                db.query(sql, [first_name, last_name, role_id, manager_id], (err, result) => {
+                    if (err) throw err;
+                    console.log(`Added ${first_name} ${last_name} to the database.`);
+                    viewAllEmployees();
+                });
+            });
+
         });
     });
 };
 
-// Use the map method to create new arrays with the list of employees and roles in the database and use this info in our choices to select a particular employee and update their role. 
+
+// Updates the selected employee and their role 
 
 const updateEmployeeRole = () => {
 
@@ -167,7 +178,7 @@ const updateEmployeeRole = () => {
         db.query(roleSql, (err, roleResults) => {
             if (err) throw err;
 
-            // Using the map method
+            // Uses the map method to create new arrays of objects to use to select a particular employee and update their role. 
 
             const employees = employeeResults.map((employee) => ({
                 name: `${employee.first_name} ${employee.last_name}`,
@@ -208,7 +219,7 @@ const updateEmployeeRole = () => {
     });
 };
 
-// Displays all roles 
+// Displays all roles when choosing the viewAllRoles option
 
 const viewAllRoles = () => {
 
@@ -225,18 +236,16 @@ const viewAllRoles = () => {
 
 const addRole = () => {
 
-    const sql = `SELECT department_name FROM departments`;
+    const sql = `SELECT id, department_name FROM departments `;
     db.query(sql, (err, rows) => {
         if (err) throw err;
 
-        // This map function allows us to utilize department names that are in the database and we push these values into this array that we use in the prompt below to eventually add a role.
+        // Create new array of objects to use for our department selection. 
 
         const departmentChoices = rows.map(row => ({
             name: row.department_name,
-            // Had to use row.department_name rather than row.id because I only selected department_names
-            value: row.department_name
+            value: row.id
         }));
-
 
         inquirer.prompt([
             {
@@ -267,7 +276,7 @@ const addRole = () => {
 
         ]).then((answers) => {
             const { role_name, salary, department_role } = answers;
-            const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, (SELECT id FROM departments WHERE department_name = ?))`;
+            const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`;
 
             db.query(sql, [role_name, salary, department_role], (err, result) => {
                 if (err) throw err;
@@ -279,7 +288,7 @@ const addRole = () => {
     });
 };
 
-// Displays the department and department id 
+// Displays the department and department id when choosing the viewAllDepartments option
 
 const viewAllDepartments = () => {
     const sql = `SELECT id, department_name AS Department FROM departments ORDER BY department_name ASC`;
