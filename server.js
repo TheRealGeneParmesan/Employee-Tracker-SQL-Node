@@ -126,13 +126,13 @@ const addEmployee = () => {
                     type: 'input',
                     name: 'first_name',
                     message: "What is the employee's first name?",
-                    validate: (input) => input.length >= 1,
+                    validate: (input) => input.length <= 15,
                 },
                 {
                     type: 'input',
                     name: 'last_name',
                     message: "What is the employee's last name?",
-                    validate: (input) => input.length >= 1,
+                    validate: (input) => input.length <= 15,
                 },
 
                 {
@@ -151,7 +151,7 @@ const addEmployee = () => {
 
                 },
 
-                // Once we receive the name of the employee's first name, last name, role and manger
+                // Once we receive the name of the employee's first name, last name, role and manager from the user, we add the answers to the database 
 
             ]).then((answers) => {
                 const { first_name, last_name, role_id, manager_id } = answers;
@@ -182,7 +182,7 @@ const updateEmployeeRole = () => {
         db.query(roleSql, (err, roleResults) => {
             if (err) throw err;
 
-            // Uses the map method to create new arrays of objects to use to select a particular employee and update their role. 
+            // Uses the map method to create new arrays of objects to select a particular employee and update their role. 
 
             const employees = employeeResults.map((employee) => ({
                 name: `${employee.first_name} ${employee.last_name}`,
@@ -216,7 +216,7 @@ const updateEmployeeRole = () => {
                     db.query(sql, [roleAssignment, employeeId], (err, result) => {
                         if (err) throw err;
                         console.log(`Updated employee's role.`);
-                        viewAllRoles();
+                        viewAllEmployees();
                     });
                 });
         });
@@ -256,7 +256,7 @@ const addRole = () => {
                 type: 'input',
                 name: 'role_name',
                 message: "What is the name of the role?",
-                validate: (input) => input.length <= 10
+                validate: (input) => input.length <= 20
             },
 
             {
@@ -276,7 +276,7 @@ const addRole = () => {
             }
 
 
-            // Once we receive the answers for role name we insert a new row in the roles table with the answers from the prompt and log it
+            // Once we receive the answers for role name we insert a new row in the roles table with the answers from the prompt. 
 
         ]).then((answers) => {
             const { role_name, salary, department_role } = answers;
@@ -312,7 +312,7 @@ const addDepartment = () => {
             type: 'input',
             name: 'department_name',
             message: "What is the name of the department?",
-            validate: (input) => input.length <= 10,
+            validate: (input) => input.length <= 20,
         },
 
         // Once we receive the answers for department name we insert a new row in the employees table with the answers from the prompt and log it
