@@ -154,51 +154,57 @@ const addEmployee = () => {
     });
 };
 
-// Updates the role ID of an employee
+// Use the map method to create new arrays with the list of employees and roles in the database and use this info in our choices to select a particular employee and update their role. 
 
 const updateEmployeeRole = () => {
 
-    const sql = `SELECT id, first_name, last_name FROM employees`;
-    db.query(sql, (err, results) => {
+    const employeeSql = `SELECT id, first_name, last_name FROM employees`;
+    const roleSql = `SELECT id, title FROM roles`;
+
+    db.query(employeeSql, (err, employeeResults) => {
         if (err) throw err;
 
-        // Maps each object to a new object with name and value properties
-        const employees = results.map((employee) => ({
-            name: `${employee.first_name} ${employee.last_name}`,
-            value: employee.id,
-        }));
+        db.query(roleSql, (err, roleResults) => {
+            if (err) throw err;
 
-        inquirer.prompt([
-            {
-                type: 'list',
-                name: 'employeeId',
-                message: 'Which employee do you want to update?',
-                choices: employees,
-            },
+            // Using the map method
 
-            {
-                type: 'input',
-                name: 'roleId',
-                message: 'What is the employees new role ID?',
+            const employees = employeeResults.map((employee) => ({
+                name: `${employee.first_name} ${employee.last_name}`,
+                value: employee.id,
+            }));
 
-                validate: (input) => {
-                    const roleId = Number(input);
-                    if (Number.isInteger(roleId) && roleId >= 1 && roleId <= 100) {
-                        return true;
-                    }
-                    return 'Please enter a valid integer between 1 and 100';
+            const roleChoices = roleResults.map((role) => ({
+                name: role.title,
+                value: role.id,
+            }));
+
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'employeeId',
+                    message: "Which employee's role do you want to update?",
+                    choices: employees,
                 },
-            },
-        ])
-            .then((answers) => {
-                const { employeeId, roleId } = answers;
-                const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
-                db.query(sql, [roleId, employeeId], (err, result) => {
-                    if (err) throw err;
-                    console.log(`Updated employee's role.`);
-                    viewAllRoles();
+
+                {
+                    type: 'list',
+                    name: 'roleAssignment',
+                    message: 'Which role do you want to assign the selected employee?',
+                    choices: roleChoices
+
+                },
+            ])
+                .then((answers) => {
+                    const { employeeId, roleAssignment } = answers;
+                    const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
+                    db.query(sql, [roleAssignment, employeeId], (err, result) => {
+                        if (err) throw err;
+                        console.log(`Updated employee's role.`);
+                        viewAllRoles();
+                    });
                 });
-            });
+        });
     });
 };
 
