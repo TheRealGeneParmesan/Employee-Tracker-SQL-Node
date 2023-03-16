@@ -250,12 +250,12 @@ const addRole = () => {
 
 };
 
-// Displays all departments in ascending order
+// Displays the department and department id 
 
 const viewAllDepartments = () => {
-    const sql = `SELECT departments.department_name AS department 
-    FROM departments 
-    ORDER BY departments.department_name ASC`;
+    const sql = `SELECT id, department_name AS Departments FROM departments ORDER BY department_name ASC`;
+
+
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
