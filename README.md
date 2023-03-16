@@ -1,6 +1,6 @@
 ## Jeremy's Content Management System (CMS)
     
-    An employee database that takes user input to modify accordingly. 
+    An employee database where I can view and modify my employees, departments, salary and job titles. 
 
 ## Table of Contents
 
