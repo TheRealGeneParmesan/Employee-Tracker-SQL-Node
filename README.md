@@ -19,6 +19,9 @@ You can also install the console.table package to display the tables neatly, asc
 
 - For this project I created an employee database that allows me to view and manage my employees, roles and departments.
 - When I run npm start, a menu presents me with options of everything that I am able to do (view all departments, all roles, all employees, add dpeartments, roles and employees and update any employee's role.
+
+You can find an example of how it works here:
+
 https://drive.google.com/file/d/1mp41bPssywLOEdp_ImStBYQgfJoaGQ28/view
 
 ## Tests
