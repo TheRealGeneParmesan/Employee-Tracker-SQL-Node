@@ -91,6 +91,8 @@ const viewAllEmployees = () => {
 // Adds new employee to table 
 
 const addEmployee = () => {
+
+
     inquirer.prompt([
         {
             type: 'input',
@@ -110,13 +112,13 @@ const addEmployee = () => {
             name: 'role_id',
             message: "What is the employee's title?",
 
-            // Validate statement to ensure that the role ID response is an integer between 1-5
+            // Validate statement to ensure that the role ID response is an integer between 1-100
             validate: (input) => {
                 const roleID = Number(input);
-                if (Number.isInteger(roleID) && roleID >= 1 && roleID <= 5)
+                if (Number.isInteger(roleID) && roleID >= 1 && roleID <= 100)
                     return true;
                 else {
-                    return "Enter a valid integer between 1-5"
+                    return "Enter a valid integer between 1-100"
                 }
             }
         },
@@ -126,18 +128,18 @@ const addEmployee = () => {
             name: 'manager_id',
             message: "Who is the employee's manager?",
 
-            // Validate statement to ensure that the manager ID response is an integer between 1-5
+            // Validate statement to ensure that the manager ID response is an integer between 1-100
             validate: (input) => {
                 const managerID = Number(input);
-                if (Number.isInteger(managerID) && managerID >= 1 && managerID <= 5)
+                if (Number.isInteger(managerID) && managerID >= 1 && managerID <= 100)
                     return true;
                 else {
-                    return "Enter a valid integer between 1-5"
+                    return "Enter a valid integer between 1-100"
                 }
             }
         },
 
-        // Once we receive the answers for first name, last name, role id and manager ID, we insert a new row in the employees table with the answers from the prompt and we log it to make sure that the employee was added correctly.
+        // Once we receive the answers for first name, last name, role id and manager ID, we insert a new row in the employees table with the answers from the prompt.
 
     ]).then((answers) => {
         const { first_name, last_name, role_id, manager_id } = answers;
@@ -180,10 +182,10 @@ const updateEmployeeRole = () => {
 
                 validate: (input) => {
                     const roleId = Number(input);
-                    if (Number.isInteger(roleId) && roleId >= 1 && roleId <= 5) {
+                    if (Number.isInteger(roleId) && roleId >= 1 && roleId <= 100) {
                         return true;
                     }
-                    return 'Please enter a valid integer between 1 and 5';
+                    return 'Please enter a valid integer between 1 and 100';
                 },
             },
         ])
@@ -199,12 +201,12 @@ const updateEmployeeRole = () => {
     });
 };
 
-// Displays all roles in ascending order 
+// Displays all roles 
 
 const viewAllRoles = () => {
-    const sql = `SELECT roles.title AS role
-    FROM roles
-    ORDER BY roles.title ASC`;
+
+    const sql = `SELECT roles.id AS role_id, roles.title AS Title, employees.first_name AS First_Name, employees.last_name as Last_Name FROM roles JOIN employees ON employees.role_id = roles.id`;
+
     db.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
@@ -232,6 +234,7 @@ const addRole = () => {
             },
         },
 
+
         // Once we receive the answers for role name we insert a new row in the roles table with the answers from the prompt and log it
 
     ]).then((answers) => {
@@ -244,6 +247,7 @@ const addRole = () => {
             viewAllRoles();
         });
     });
+
 };
 
 // Displays all departments in ascending order
@@ -283,8 +287,3 @@ const addDepartment = () => {
         });
     });
 };
-
-
-
-
-
