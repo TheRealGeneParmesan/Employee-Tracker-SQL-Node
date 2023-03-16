@@ -80,7 +80,11 @@ const letsGetItStarted = () => {
 
 // Displays all the employees in the database 
 const viewAllEmployees = () => {
-    const sql = `SELECT employees.id as EmployeeID, employees.first_name AS First_Name, employees.last_name as Last_Name, roles.title AS Title, CONCAT(manager.first_name, " ",manager.last_name) AS Manager FROM employees JOIN roles on employees.role_id = roles.id JOIN employees manager on employees.manager_id = manager.id`;
+    const sql = `SELECT employees.id as ID, employees.first_name AS First_Name, employees.last_name as Last_Name, roles.title AS Title, departments.department_name AS Department, roles.salary AS Salary, CONCAT(manager.first_name, " ",manager.last_name) AS Manager 
+    FROM employees 
+    JOIN roles ON employees.role_id = roles.id 
+    JOIN employees manager ON employees.manager_id = manager.id 
+    JOIN departments ON roles.department_id = departments.id`;
 
     db.query(sql, (err, rows) => {
         if (err) throw err;
