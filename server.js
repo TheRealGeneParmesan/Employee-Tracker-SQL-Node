@@ -205,7 +205,7 @@ const updateEmployeeRole = () => {
 
 const viewAllRoles = () => {
 
-    const sql = `SELECT roles.id AS role_id, roles.title AS Title, employees.first_name AS First_Name, employees.last_name as Last_Name FROM roles JOIN employees ON employees.role_id = roles.id`;
+    const sql = `SELECT roles.id AS id, roles.title AS Title, departments.department_name as Department, roles.salary AS Salary FROM roles JOIN departments ON roles.department_id = departments.id ORDER BY departments.department_name ASC`;
 
     db.query(sql, (err, rows) => {
         if (err) throw err;
@@ -217,44 +217,65 @@ const viewAllRoles = () => {
 // Adds a new role based on response and then runs the viewAllRoles function to show the updated roles within the database.
 
 const addRole = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'role_name',
-            message: "What is the name of the role?",
 
-        },
+    const sql = `SELECT department_name FROM departments`;
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
 
-        {
-            type: 'input',
-            name: 'salary',
-            message: "What is the salary for this role?",
-            validate: (input) => {
-                return isNaN(input) ? 'Please enter a number' : true;
+        // This map function allows us to utilize department names that are in the database and we push these values into this array that we use in the prompt below to eventually add a role.
+
+        const departmentChoices = rows.map(row => ({
+            name: row.department_name,
+            // Had to use row.department_name rather than row.id because I only selected department_names
+            value: row.department_name
+        }));
+
+
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'role_name',
+                message: "What is the name of the role?",
+                validate: (input) => input.length <= 10
             },
-        },
+
+            {
+                type: 'input',
+                name: 'salary',
+                message: "What is the salary for this role?",
+                validate: (input) => {
+                    return isNaN(input) ? 'Please enter a number' : true;
+                },
+            },
+
+            {
+                type: 'list',
+                name: 'department_role',
+                message: "Which department does the role belong to?",
+                choices: departmentChoices
+            }
 
 
-        // Once we receive the answers for role name we insert a new row in the roles table with the answers from the prompt and log it
+            // Once we receive the answers for role name we insert a new row in the roles table with the answers from the prompt and log it
 
-    ]).then((answers) => {
-        const { role_name, salary } = answers;
+        ]).then((answers) => {
+            const { role_name, salary, department_role } = answers;
+            const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, (SELECT id FROM departments WHERE department_name = ?))`;
 
-        const sql = `INSERT INTO roles (title, salary) VALUES (?, ?)`;
-        db.query(sql, [role_name, salary], (err, result) => {
-            if (err) throw err;
-            console.log(`Added ${role_name} to the database.`);
-            viewAllRoles();
+            db.query(sql, [role_name, salary, department_role], (err, result) => {
+                if (err) throw err;
+                console.log(`Added ${role_name} to the database.`);
+                viewAllRoles();
+            });
         });
-    });
 
+    });
 };
 
 // Displays the department and department id 
 
 const viewAllDepartments = () => {
-    const sql = `SELECT id, department_name AS Departments FROM departments ORDER BY department_name ASC`;
-
+    const sql = `SELECT id, department_name AS Department FROM departments ORDER BY department_name ASC`;
 
     db.query(sql, (err, rows) => {
         if (err) throw err;
@@ -271,7 +292,7 @@ const addDepartment = () => {
             type: 'input',
             name: 'department_name',
             message: "What is the name of the department?",
-            validate: (input) => input.length <= 20,
+            validate: (input) => input.length <= 10,
         },
 
         // Once we receive the answers for department name we insert a new row in the employees table with the answers from the prompt and log it
