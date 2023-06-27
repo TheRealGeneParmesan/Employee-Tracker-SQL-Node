@@ -12,8 +12,11 @@
 
 ## Installation
 
-You must install the mysql2 and inquirer packages in node.js 
+You must install the MYSQL2 and Inquirer packages in Node.js 
 You can also install the console.table package to display the tables neatly, asciiart-logo to create art for the database and the dotenv package to protect sensitive information.
+
+![image](https://github.com/TheRealGeneParmesan/Employee-Tracker-SQL-Node/assets/119083185/c0ef84ec-bdca-4686-9e98-a467a0a9343c)
+
 
 ## Usage
 
